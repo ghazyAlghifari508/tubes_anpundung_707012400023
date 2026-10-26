@@ -63,11 +63,14 @@ class HalamanTitikRawan extends StatelessWidget {
       },
     ];
 
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FE),
+      backgroundColor: isDark ? null : const Color(0xFFF8F9FE),
       appBar: AppBar(
         title: const Text('Titik Rawan Pungli Bandung'),
-        backgroundColor: const Color(0xFF163172),
+        backgroundColor: isDark ? null : const Color(0xFF163172),
         foregroundColor: Colors.white,
       ),
       body: ListView.builder(
@@ -82,7 +85,7 @@ class HalamanTitikRawan extends StatelessWidget {
             elevation: 1.5,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(14),
-              side: BorderSide(color: Colors.grey.shade200),
+              side: BorderSide(color: isDark ? Colors.white12 : Colors.grey.shade200),
             ),
             child: Padding(
               padding: const EdgeInsets.all(16),
@@ -151,10 +154,10 @@ class HalamanTitikRawan extends StatelessWidget {
                   const SizedBox(height: 10),
                   Text(
                     item['nama'] as String,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF163172),
+                      color: isDark ? const Color(0xFF90CAF9) : const Color(0xFF163172),
                     ),
                   ),
                   const SizedBox(height: 6),
@@ -162,7 +165,7 @@ class HalamanTitikRawan extends StatelessWidget {
                     item['modus'] as String,
                     style: TextStyle(
                       fontSize: 12,
-                      color: Colors.grey.shade800,
+                      color: isDark ? Colors.grey.shade300 : Colors.grey.shade800,
                       height: 1.4,
                     ),
                   ),

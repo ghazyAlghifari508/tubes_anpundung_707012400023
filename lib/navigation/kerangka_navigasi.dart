@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../cubit/laporan_cubit.dart';
+import '../cubit/theme_cubit.dart';
 import '../pages/halaman_beranda.dart';
 import '../pages/halaman_kategori_pungli.dart';
 import '../pages/halaman_profil_pelapor.dart';
@@ -12,6 +13,7 @@ import 'app_routes.dart';
 /// 2. NavigationBar Material 3 (Tampilan ponsel < 600px)
 /// 3. NavigationRail (Tampilan tablet / lanskap >= 600px)
 /// 4. NavigationDrawer dengan UserAccountsDrawerHeader
+/// 5. ThemeCubit (Theming Material 3 & Mode Gelap)
 class KerangkaNavigasiAnpundung extends StatefulWidget {
   const KerangkaNavigasiAnpundung({super.key});
 
@@ -81,6 +83,8 @@ class _KerangkaNavigasiAnpundungState extends State<KerangkaNavigasiAnpundung> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final isWideScreen = screenWidth >= 600;
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
     return PopScope(
       canPop: false,
@@ -97,10 +101,24 @@ class _KerangkaNavigasiAnpundungState extends State<KerangkaNavigasiAnpundung> {
             _titles[_currentIndex],
             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
           ),
-          backgroundColor: const Color(0xFF163172),
-          foregroundColor: Colors.white,
-          elevation: 0,
+          elevation: 1,
           actions: [
+            BlocBuilder<ThemeCubit, ThemeMode>(
+              builder: (context, themeMode) {
+                final isDarkModeActive = themeMode == ThemeMode.dark;
+                return IconButton(
+                  icon: Icon(
+                    isDarkModeActive
+                        ? Icons.light_mode_rounded
+                        : Icons.dark_mode_rounded,
+                  ),
+                  tooltip: isDarkModeActive
+                      ? 'Ganti ke Mode Terang'
+                      : 'Ganti ke Mode Gelap',
+                  onPressed: () => context.read<ThemeCubit>().toggle(),
+                );
+              },
+            ),
             IconButton(
               icon: const Icon(Icons.add_alert_rounded),
               tooltip: 'Lapor Pungli Cepat',
@@ -113,7 +131,9 @@ class _KerangkaNavigasiAnpundungState extends State<KerangkaNavigasiAnpundung> {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(result.toString()),
-                      backgroundColor: const Color(0xFF163172),
+                      backgroundColor: isDark
+                          ? const Color(0xFF1E3A8A)
+                          : const Color(0xFF163172),
                       behavior: SnackBarBehavior.floating,
                     ),
                   );
@@ -124,7 +144,7 @@ class _KerangkaNavigasiAnpundungState extends State<KerangkaNavigasiAnpundung> {
         ),
 
         // NavigationDrawer
-        drawer: _buildNavigationDrawer(context),
+        drawer: _buildNavigationDrawer(context, isDark),
 
         // Body Adaptif
         body: isWideScreen
@@ -134,11 +154,13 @@ class _KerangkaNavigasiAnpundungState extends State<KerangkaNavigasiAnpundung> {
                     selectedIndex: _currentIndex,
                     onDestinationSelected: _onDestinationSelected,
                     labelType: NavigationRailLabelType.all,
-                    leading: const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 16.0),
+                    leading: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 16.0),
                       child: CircleAvatar(
-                        backgroundColor: Color(0xFF163172),
-                        child: Icon(Icons.shield_rounded, color: Colors.white),
+                        backgroundColor: isDark
+                            ? const Color(0xFF1E3A8A)
+                            : const Color(0xFF163172),
+                        child: const Icon(Icons.shield_rounded, color: Colors.white),
                       ),
                     ),
                     destinations: [
@@ -192,21 +214,20 @@ class _KerangkaNavigasiAnpundungState extends State<KerangkaNavigasiAnpundung> {
             : NavigationBar(
                 selectedIndex: _currentIndex,
                 onDestinationSelected: _onDestinationSelected,
-                indicatorColor: const Color(0xFFD6E4F0),
                 destinations: [
-                  const NavigationDestination(
-                    icon: Icon(Icons.dashboard_outlined),
+                  NavigationDestination(
+                    icon: const Icon(Icons.dashboard_outlined),
                     selectedIcon: Icon(
                       Icons.dashboard_rounded,
-                      color: Color(0xFF163172),
+                      color: isDark ? const Color(0xFF93C5FD) : const Color(0xFF163172),
                     ),
                     label: 'Beranda',
                   ),
-                  const NavigationDestination(
-                    icon: Icon(Icons.report_problem_outlined),
+                  NavigationDestination(
+                    icon: const Icon(Icons.report_problem_outlined),
                     selectedIcon: Icon(
                       Icons.report_problem_rounded,
-                      color: Color(0xFF163172),
+                      color: isDark ? const Color(0xFF93C5FD) : const Color(0xFF163172),
                     ),
                     label: 'Kategori',
                   ),
@@ -230,9 +251,9 @@ class _KerangkaNavigasiAnpundungState extends State<KerangkaNavigasiAnpundung> {
                           isLabelVisible: total > 0,
                           label: Text(total.toString()),
                           backgroundColor: const Color(0xFFE53935),
-                          child: const Icon(
+                          child: Icon(
                             Icons.person_rounded,
-                            color: Color(0xFF163172),
+                            color: isDark ? const Color(0xFF93C5FD) : const Color(0xFF163172),
                           ),
                         );
                       },
@@ -245,26 +266,30 @@ class _KerangkaNavigasiAnpundungState extends State<KerangkaNavigasiAnpundung> {
     );
   }
 
-  Widget _buildNavigationDrawer(BuildContext context) {
+  Widget _buildNavigationDrawer(BuildContext context, bool isDark) {
+    final theme = Theme.of(context);
+
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
           // Drawer Header Mahasiswa
           UserAccountsDrawerHeader(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [Color(0xFF163172), Color(0xFF1E56A0)],
+                colors: isDark
+                    ? [const Color(0xFF1E293B), const Color(0xFF0F172A)]
+                    : [const Color(0xFF163172), const Color(0xFF1E56A0)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
             ),
-            currentAccountPicture: const CircleAvatar(
-              backgroundColor: Colors.white,
+            currentAccountPicture: CircleAvatar(
+              backgroundColor: isDark ? const Color(0xFF0F172A) : Colors.white,
               child: Icon(
                 Icons.shield_rounded,
                 size: 42,
-                color: Color(0xFF163172),
+                color: isDark ? const Color(0xFF93C5FD) : const Color(0xFF163172),
               ),
             ),
             accountName: const Text(
@@ -278,19 +303,22 @@ class _KerangkaNavigasiAnpundungState extends State<KerangkaNavigasiAnpundung> {
           ),
 
           // Grup Destinasi Utama
-          const Padding(
-            padding: EdgeInsets.fromLTRB(16, 12, 16, 4),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
             child: Text(
               'Layanan Utama',
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.bold,
-                color: Colors.grey,
+                color: theme.colorScheme.onSurfaceVariant,
               ),
             ),
           ),
           ListTile(
-            leading: const Icon(Icons.dashboard_rounded, color: Color(0xFF163172)),
+            leading: Icon(
+              Icons.dashboard_rounded,
+              color: isDark ? const Color(0xFF93C5FD) : const Color(0xFF163172),
+            ),
             title: const Text('Beranda Anpundung'),
             selected: _currentIndex == 0,
             onTap: () {
@@ -299,8 +327,10 @@ class _KerangkaNavigasiAnpundungState extends State<KerangkaNavigasiAnpundung> {
             },
           ),
           ListTile(
-            leading:
-                const Icon(Icons.report_problem_rounded, color: Color(0xFF163172)),
+            leading: Icon(
+              Icons.report_problem_rounded,
+              color: isDark ? const Color(0xFF93C5FD) : const Color(0xFF163172),
+            ),
             title: const Text('Kategori Pungli'),
             selected: _currentIndex == 1,
             onTap: () {
@@ -309,7 +339,10 @@ class _KerangkaNavigasiAnpundungState extends State<KerangkaNavigasiAnpundung> {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.person_rounded, color: Color(0xFF163172)),
+            leading: Icon(
+              Icons.person_rounded,
+              color: isDark ? const Color(0xFF93C5FD) : const Color(0xFF163172),
+            ),
             title: const Text('Profil & Laporan Saya'),
             trailing: BlocSelector<LaporanCubit, LaporanState, int>(
               selector: (state) => state.totalLaporan,
@@ -331,14 +364,14 @@ class _KerangkaNavigasiAnpundungState extends State<KerangkaNavigasiAnpundung> {
           const Divider(),
 
           // Grup Menu Pendukung
-          const Padding(
-            padding: EdgeInsets.fromLTRB(16, 8, 16, 4),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
             child: Text(
               'Menu Pendukung Saber Pungli',
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.bold,
-                color: Colors.grey,
+                color: theme.colorScheme.onSurfaceVariant,
               ),
             ),
           ),
@@ -351,8 +384,15 @@ class _KerangkaNavigasiAnpundungState extends State<KerangkaNavigasiAnpundung> {
             },
           ),
           ListTile(
-            leading:
-                const Icon(Icons.phone_in_talk_rounded, color: Colors.green),
+            leading: const Icon(Icons.gavel_rounded, color: Color(0xFFF57C00)),
+            title: const Text('Panduan & Aspek Hukum'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushNamed(context, AppRoutes.panduanHukum);
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.phone_in_talk_rounded, color: Color(0xFF388E3C)),
             title: const Text('Kontak Darurat Satgas'),
             onTap: () {
               Navigator.pop(context);
@@ -360,16 +400,11 @@ class _KerangkaNavigasiAnpundungState extends State<KerangkaNavigasiAnpundung> {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.gavel_rounded, color: Colors.indigo),
-            title: const Text('Panduan Hukum & Sanksi'),
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.pushNamed(context, AppRoutes.panduanHukum);
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.info_outline_rounded, color: Colors.teal),
-            title: const Text('Tentang Anpundung'),
+            leading: Icon(
+              Icons.info_outline_rounded,
+              color: isDark ? const Color(0xFF93C5FD) : const Color(0xFF163172),
+            ),
+            title: const Text('Tentang Aplikasi'),
             onTap: () {
               Navigator.pop(context);
               Navigator.pushNamed(context, AppRoutes.tentangAplikasi);
@@ -378,12 +413,11 @@ class _KerangkaNavigasiAnpundungState extends State<KerangkaNavigasiAnpundung> {
 
           const Divider(),
 
-          // Menu Keluar
           ListTile(
-            leading: const Icon(Icons.logout_rounded, color: Colors.red),
+            leading: const Icon(Icons.logout_rounded, color: Color(0xFFE53935)),
             title: const Text(
               'Keluar Aplikasi',
-              style: TextStyle(color: Colors.red),
+              style: TextStyle(color: Color(0xFFE53935), fontWeight: FontWeight.bold),
             ),
             onTap: () async {
               Navigator.pop(context);

@@ -40,6 +40,9 @@ class HalamanRiwayatLaporan extends StatelessWidget {
         builder: (context, state) {
           final riwayat = state.daftarLaporan;
 
+          final theme = Theme.of(context);
+          final isDark = theme.brightness == Brightness.dark;
+
           if (riwayat.isEmpty) {
             return Center(
               child: Column(
@@ -48,21 +51,21 @@ class HalamanRiwayatLaporan extends StatelessWidget {
                   Icon(
                     Icons.assignment_late_outlined,
                     size: 64,
-                    color: Colors.grey.shade400,
+                    color: isDark ? Colors.grey.shade600 : Colors.grey.shade400,
                   ),
                   const SizedBox(height: 16),
-                  const Text(
+                  Text(
                     'Belum Ada Riwayat Laporan',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF163172),
+                      color: isDark ? const Color(0xFF90CAF9) : const Color(0xFF163172),
                     ),
                   ),
                   const SizedBox(height: 6),
                   Text(
                     'Gunakan tombol "Lapor Kilat" di bawah untuk melaporkan pungli.',
-                    style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                    style: TextStyle(fontSize: 12, color: isDark ? Colors.grey.shade400 : Colors.grey.shade600),
                   ),
                 ],
               ),
@@ -81,7 +84,7 @@ class HalamanRiwayatLaporan extends StatelessWidget {
                 elevation: 1,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(14),
-                  side: BorderSide(color: Colors.grey.shade200),
+                  side: BorderSide(color: isDark ? Colors.white12 : Colors.grey.shade200),
                 ),
                 child: ListTile(
                   contentPadding: const EdgeInsets.all(14),
@@ -96,10 +99,10 @@ class HalamanRiwayatLaporan extends StatelessWidget {
                   ),
                   title: Text(
                     item.judul,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF163172),
+                      color: isDark ? const Color(0xFF90CAF9) : const Color(0xFF163172),
                     ),
                   ),
                   subtitle: Column(

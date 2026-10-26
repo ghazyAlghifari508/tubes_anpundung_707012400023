@@ -14,11 +14,14 @@ class HalamanRincianLaporan extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FE),
+      backgroundColor: isDark ? null : const Color(0xFFF8F9FE),
       appBar: AppBar(
         title: const Text('Rincian Aduan Pungli'),
-        backgroundColor: const Color(0xFF163172),
+        backgroundColor: isDark ? null : const Color(0xFF163172),
         foregroundColor: Colors.white,
         elevation: 0,
       ),
@@ -28,19 +31,19 @@ class HalamanRincianLaporan extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Header Kartu Status
-            _buildStatusCard(),
+            _buildStatusCard(isDark),
             const SizedBox(height: 16),
 
             // Informasi Pokok Laporan
-            _buildInfoCard(),
+            _buildInfoCard(isDark),
             const SizedBox(height: 16),
 
             // Deskripsi & Kronologi Kasus
-            _buildKronologiCard(),
+            _buildKronologiCard(isDark),
             const SizedBox(height: 16),
 
             // Catatan Penindakan Saber Pungli
-            _buildTindakLanjutCard(),
+            _buildTindakLanjutCard(isDark),
             const SizedBox(height: 24),
 
             // Tombol Interaksi & Pengembalian Data (Pop with Result)
@@ -54,7 +57,7 @@ class HalamanRincianLaporan extends StatelessWidget {
                   Navigator.pop(context, pesanBalik);
                 },
                 style: FilledButton.styleFrom(
-                  backgroundColor: const Color(0xFF163172),
+                  backgroundColor: isDark ? const Color(0xFF1E3A8A) : const Color(0xFF163172),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14),
                   ),
@@ -75,8 +78,8 @@ class HalamanRincianLaporan extends StatelessWidget {
                   Navigator.pop(context);
                 },
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: const Color(0xFF163172),
-                  side: const BorderSide(color: Color(0xFF163172)),
+                  foregroundColor: isDark ? const Color(0xFF90CAF9) : const Color(0xFF163172),
+                  side: BorderSide(color: isDark ? const Color(0xFF90CAF9) : const Color(0xFF163172)),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14),
                   ),
@@ -92,14 +95,14 @@ class HalamanRincianLaporan extends StatelessWidget {
     );
   }
 
-  Widget _buildStatusCard() {
+  Widget _buildStatusCard(bool isDark) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? const Color(0xFF1E293B) : Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: isDark ? Colors.white12 : Colors.grey.shade200),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.04),
@@ -117,16 +120,18 @@ class HalamanRincianLaporan extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF163172).withValues(alpha: 0.1),
+                  color: isDark
+                      ? const Color(0xFF1E3A8A).withValues(alpha: 0.3)
+                      : const Color(0xFF163172).withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
                   arguments.idLaporan,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 12,
                     fontFamily: 'monospace',
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF163172),
+                    color: isDark ? const Color(0xFF90CAF9) : const Color(0xFF163172),
                   ),
                 ),
               ),
@@ -150,10 +155,10 @@ class HalamanRincianLaporan extends StatelessWidget {
           const SizedBox(height: 12),
           Text(
             arguments.judul,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF163172),
+              color: isDark ? const Color(0xFF90CAF9) : const Color(0xFF163172),
             ),
           ),
           const SizedBox(height: 8),
@@ -161,7 +166,7 @@ class HalamanRincianLaporan extends StatelessWidget {
             'Kategori: ${arguments.kategori} | Dilaporkan pada: ${arguments.tanggal}',
             style: TextStyle(
               fontSize: 12,
-              color: Colors.grey.shade600,
+              color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
             ),
           ),
         ],
@@ -169,24 +174,24 @@ class HalamanRincianLaporan extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoCard() {
+  Widget _buildInfoCard(bool isDark) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? const Color(0xFF1E293B) : Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: isDark ? Colors.white12 : Colors.grey.shade200),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Informasi Kejadian',
             style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF163172),
+              color: isDark ? const Color(0xFF90CAF9) : const Color(0xFF163172),
             ),
           ),
           const Divider(height: 20),
@@ -194,12 +199,14 @@ class HalamanRincianLaporan extends StatelessWidget {
             icon: Icons.location_on_rounded,
             label: 'Lokasi Kejadian',
             value: arguments.lokasi,
+            isDark: isDark,
           ),
           const SizedBox(height: 12),
           _buildRowInfo(
             icon: Icons.person_off_rounded,
             label: 'Pihak Terlapor',
             value: arguments.terlapor,
+            isDark: isDark,
           ),
           const SizedBox(height: 12),
           _buildRowInfo(
@@ -208,6 +215,7 @@ class HalamanRincianLaporan extends StatelessWidget {
             value: arguments.nominal,
             valueColor: const Color(0xFFE53935),
             isBold: true,
+            isDark: isDark,
           ),
         ],
       ),
@@ -220,11 +228,12 @@ class HalamanRincianLaporan extends StatelessWidget {
     required String value,
     Color? valueColor,
     bool isBold = false,
+    bool isDark = false,
   }) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, size: 20, color: const Color(0xFF1E56A0)),
+        Icon(icon, size: 20, color: isDark ? const Color(0xFF64B5F6) : const Color(0xFF1E56A0)),
         const SizedBox(width: 10),
         Expanded(
           child: Column(
@@ -234,7 +243,7 @@ class HalamanRincianLaporan extends StatelessWidget {
                 label,
                 style: TextStyle(
                   fontSize: 11,
-                  color: Colors.grey.shade600,
+                  color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
                 ),
               ),
               const SizedBox(height: 2),
@@ -243,7 +252,7 @@ class HalamanRincianLaporan extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: isBold ? FontWeight.bold : FontWeight.w600,
-                  color: valueColor ?? Colors.blueGrey.shade900,
+                  color: valueColor ?? (isDark ? Colors.white : Colors.blueGrey.shade900),
                 ),
               ),
             ],
@@ -253,28 +262,28 @@ class HalamanRincianLaporan extends StatelessWidget {
     );
   }
 
-  Widget _buildKronologiCard() {
+  Widget _buildKronologiCard(bool isDark) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? const Color(0xFF1E293B) : Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: isDark ? Colors.white12 : Colors.grey.shade200),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Row(
+          Row(
             children: [
-              Icon(Icons.notes_rounded, color: Color(0xFF163172), size: 20),
-              SizedBox(width: 8),
+              Icon(Icons.notes_rounded, color: isDark ? const Color(0xFF90CAF9) : const Color(0xFF163172), size: 20),
+              const SizedBox(width: 8),
               Text(
                 'Kronologi & Kesaksian Pelapor',
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF163172),
+                  color: isDark ? const Color(0xFF90CAF9) : const Color(0xFF163172),
                 ),
               ),
             ],
@@ -284,7 +293,7 @@ class HalamanRincianLaporan extends StatelessWidget {
             arguments.deskripsi,
             style: TextStyle(
               fontSize: 13,
-              color: Colors.grey.shade800,
+              color: isDark ? Colors.grey.shade300 : Colors.grey.shade800,
               height: 1.5,
             ),
           ),
@@ -293,14 +302,14 @@ class HalamanRincianLaporan extends StatelessWidget {
     );
   }
 
-  Widget _buildTindakLanjutCard() {
+  Widget _buildTindakLanjutCard(bool isDark) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: const Color(0xFFE8F5E9),
+        color: isDark ? const Color(0xFF0F3820) : const Color(0xFFE8F5E9),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFA5D6A7)),
+        border: Border.all(color: isDark ? const Color(0xFF2E7D32) : const Color(0xFFA5D6A7)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -309,7 +318,7 @@ class HalamanRincianLaporan extends StatelessWidget {
             children: [
               Icon(
                 Icons.gavel_rounded,
-                color: Colors.green.shade800,
+                color: isDark ? Colors.green.shade300 : Colors.green.shade800,
                 size: 22,
               ),
               const SizedBox(width: 8),
@@ -318,7 +327,7 @@ class HalamanRincianLaporan extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.bold,
-                  color: Colors.green.shade900,
+                  color: isDark ? Colors.green.shade200 : Colors.green.shade900,
                 ),
               ),
             ],
@@ -328,7 +337,7 @@ class HalamanRincianLaporan extends StatelessWidget {
             arguments.tindakLanjut,
             style: TextStyle(
               fontSize: 13,
-              color: Colors.green.shade900,
+              color: isDark ? Colors.green.shade100 : Colors.green.shade900,
               height: 1.45,
             ),
           ),

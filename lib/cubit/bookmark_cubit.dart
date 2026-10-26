@@ -21,6 +21,8 @@ class BookmarkTitikRawanCubit extends Cubit<Set<String>> {
     emit(baru);
   }
 
+  void hapusBookmark(String idTitikRawan) => batalPantau(idTitikRawan);
+
   bool isDipantau(String idTitikRawan) {
     return state.contains(idTitikRawan);
   }

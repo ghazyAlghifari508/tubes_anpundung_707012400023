@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tubes_anpundung_707012400023/cubit/bookmark_cubit.dart';
 import 'package:tubes_anpundung_707012400023/cubit/laporan_cubit.dart';
+import 'package:tubes_anpundung_707012400023/cubit/theme_cubit.dart';
 import 'package:tubes_anpundung_707012400023/main.dart';
 
 void main() {
@@ -39,6 +40,23 @@ void main() {
 
       cubit.toggleBookmark('TR-BDG-02');
       expect(cubit.isDipantau('TR-BDG-02'), isFalse);
+    });
+
+    test('ThemeCubit unit test - toggle and setDarkMode', () {
+      final cubit = ThemeCubit();
+      expect(cubit.state, ThemeMode.light);
+
+      cubit.toggle();
+      expect(cubit.state, ThemeMode.dark);
+
+      cubit.toggle();
+      expect(cubit.state, ThemeMode.light);
+
+      cubit.setDarkMode(true);
+      expect(cubit.state, ThemeMode.dark);
+
+      cubit.setDarkMode(false);
+      expect(cubit.state, ThemeMode.light);
     });
   });
 
@@ -112,6 +130,24 @@ void main() {
 
     expect(find.text('Profil & Aduan Warga'), findsOneWidget);
     expect(find.text('Titik Rawan Dipantau'), findsOneWidget);
+
+    // 6. Uji SwitchListTile Dark Mode di Halaman Profil
+    final switchFinder = find.byType(Switch);
+    expect(switchFinder, findsOneWidget);
+
+    // Cek tema awal adalah light
+    var app = tester.widget<MaterialApp>(find.byType(MaterialApp));
+    expect(app.themeMode, ThemeMode.light);
+
+    // Tap switch untuk mengaktifkan Dark Mode
+    await tester.tap(switchFinder);
+    await tester.pumpAndSettle();
+
+    // Verifikasi tema berubah menjadi dark
+    app = tester.widget<MaterialApp>(find.byType(MaterialApp));
+    expect(app.themeMode, ThemeMode.dark);
+    expect(find.text('Mode malam aktif: antarmuka ramah mata di malam hari'),
+        findsOneWidget);
   });
 
   testWidgets('Uji Tampilan Adaptif Layar Lebar NavigationRail', (

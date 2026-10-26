@@ -68,6 +68,9 @@ class HalamanKategoriPungli extends StatelessWidget {
     BuildContext context,
     List<RincianLaporanArguments> items,
   ) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return ListView.builder(
       padding: const EdgeInsets.all(16),
       itemCount: items.length,
@@ -78,7 +81,7 @@ class HalamanKategoriPungli extends StatelessWidget {
           elevation: 1.5,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(14),
-            side: BorderSide(color: Colors.grey.shade200),
+            side: BorderSide(color: isDark ? Colors.white12 : Colors.grey.shade200),
           ),
           child: Padding(
             padding: const EdgeInsets.all(16),
@@ -115,7 +118,7 @@ class HalamanKategoriPungli extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 11,
                         fontFamily: 'monospace',
-                        color: Colors.grey.shade600,
+                        color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -124,10 +127,10 @@ class HalamanKategoriPungli extends StatelessWidget {
                 const SizedBox(height: 10),
                 Text(
                   item.judul,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF163172),
+                    color: isDark ? const Color(0xFF90CAF9) : const Color(0xFF163172),
                   ),
                 ),
                 const SizedBox(height: 6),
@@ -136,7 +139,7 @@ class HalamanKategoriPungli extends StatelessWidget {
                     Icon(
                       Icons.location_on_outlined,
                       size: 15,
-                      color: Colors.grey.shade600,
+                      color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
                     ),
                     const SizedBox(width: 4),
                     Expanded(
@@ -144,7 +147,7 @@ class HalamanKategoriPungli extends StatelessWidget {
                         item.lokasi,
                         style: TextStyle(
                           fontSize: 12,
-                          color: Colors.grey.shade700,
+                          color: isDark ? Colors.grey.shade300 : Colors.grey.shade700,
                         ),
                       ),
                     ),
@@ -156,7 +159,7 @@ class HalamanKategoriPungli extends StatelessWidget {
                     Icon(
                       Icons.person_pin_outlined,
                       size: 15,
-                      color: Colors.grey.shade600,
+                      color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
                     ),
                     const SizedBox(width: 4),
                     Expanded(
@@ -164,7 +167,7 @@ class HalamanKategoriPungli extends StatelessWidget {
                         'Terlapor: ${item.terlapor}',
                         style: TextStyle(
                           fontSize: 12,
-                          color: Colors.grey.shade700,
+                          color: isDark ? Colors.grey.shade300 : Colors.grey.shade700,
                         ),
                       ),
                     ),
@@ -182,7 +185,7 @@ class HalamanKategoriPungli extends StatelessWidget {
                             'Pungutan Liar Diminta',
                             style: TextStyle(
                               fontSize: 10,
-                              color: Colors.grey.shade600,
+                              color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
                             ),
                           ),
                           Text(
@@ -209,14 +212,18 @@ class HalamanKategoriPungli extends StatelessWidget {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(result.toString()),
-                              backgroundColor: const Color(0xFF163172),
+                              backgroundColor: isDark
+                                  ? const Color(0xFF1E3A8A)
+                                  : const Color(0xFF163172),
                               behavior: SnackBarBehavior.floating,
                             ),
                           );
                         }
                       },
                       style: FilledButton.styleFrom(
-                        backgroundColor: const Color(0xFF163172),
+                        backgroundColor: isDark
+                            ? const Color(0xFF1E3A8A)
+                            : const Color(0xFF163172),
                         padding: const EdgeInsets.symmetric(
                           horizontal: 14,
                           vertical: 10,
